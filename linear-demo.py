@@ -1,18 +1,18 @@
 #!/usr/bin/python
 
-from mininet.topo import topo
-from mininet.net import mininet
+from mininet.topo import Topo
+from mininet.net import Mininet
 from mininet.util import irange,dumpNodeConnections
-from mininet.og import setLogLevel
+from mininet.log import setLogLevel
 
 class LinearTopo(Topo):
         "Linear topology of k switches, with one host per switch"
 
-        def__init__(self,k=2,**opts)
+        def __init__(self,k=2,**opts):
             """Init.
-                k: number of switches (and hosts)
-                hconf: host configuration options
-                lconf: link configuration options"""
+               k: number of switches (and hosts)
+               hconf: host configuration options
+               lconf: link configuration options"""
 
             super(LinearTopo,self).__init__(**opts)
 
@@ -38,7 +38,7 @@ def simpleTest():
     net.pingAll()
     net.stop()
 
-if__name__=='__main__':
+if __name__ == '__main__':
     # tell Mininet to print useful information
     setLogLevel('info')
     simpleTest()
