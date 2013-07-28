@@ -39,17 +39,20 @@ class Firewall (EventMixin):
         msg = of.ofp_flow_mod()
         match = of.ofp_match()
 
+	log.debug('starting firewall')
+
         # Read lines from CSV file
         with open(policyFile) as csvfile:
             macFilter = csv.DictReader(csvfile)
 
             # For each row create a 
             for row in macFilter:
-                msg.match.dl_src = row['mac_1']
-                msg.match.dl_dst = row['mac_2']
-                log.debug('installing filter for %s -> %s' (row['mac_1']), row['mac_2']))
-                msg.actions.append(of.ofp_action_output())
-                self.connection.send(msg)
+                msg.match.dl_src = row['mac_0']
+                msg.match.dl_dst = row['mac_1']
+                log.debug('installing filter for %s -> %s', (row['mac_0'], row['mac_1']))
+                # msg.actions.append(of.ofp_action_output(port = of.OFPP_NONE))
+
+       		# event.connection.send(msg)
 
         log.debug("Firewall rules installed on %s", dpidToStr(event.dpid))
 
