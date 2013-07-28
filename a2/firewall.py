@@ -16,6 +16,8 @@ from collections import namedtuple
 import os
 ''' Add your imports here ... '''
 
+# import 'csv' module to handle reading of firewall-policies.csv file
+import csv
 
 
 log = core.getLogger()
@@ -34,8 +36,21 @@ class Firewall (EventMixin):
     def _handle_ConnectionUp (self, event):    
         ''' Add your logic here ... '''
         
+        msg = of.ofp_flow_mod()
+        match = of.ofp_match()
 
-    
+        # Read lines from CSV file
+        with open(policyFile) as csvfile:
+            macFilter = csv.DictReader(csvfile)
+
+            # For each row create a 
+            for row in macFilter:
+                msg.match.dl_src = row['mac_1']
+                msg.match.dl_dst = row['mac_2']
+                log.debug('installing filter for %s -> %s' (row['mac_1']), row['mac_2']))
+                msg.actions.append(of.ofp_action_output())
+                self.connection.send(msg)
+
         log.debug("Firewall rules installed on %s", dpidToStr(event.dpid))
 
 def launch ():
