@@ -47,12 +47,12 @@ class Firewall (EventMixin):
 
             # For each row create a 
             for row in macFilter:
-                msg.match.dl_src = row['mac_0']
-                msg.match.dl_dst = row['mac_1']
+                msg.match.dl_src = EthAddr(row['mac_0'])
+                msg.match.dl_dst = EthAddr(row['mac_1'])
                 log.debug('installing filter for %s -> %s', (row['mac_0'], row['mac_1']))
                 # msg.actions.append(of.ofp_action_output(port = of.OFPP_NONE))
 
-       		# event.connection.send(msg)
+       		event.connection.send(msg)
 
         log.debug("Firewall rules installed on %s", dpidToStr(event.dpid))
 
@@ -60,4 +60,5 @@ def launch ():
     '''
     Starting the Firewall module
     '''
+    log.debug('launching firewall')
     core.registerNew(Firewall)
