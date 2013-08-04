@@ -39,10 +39,12 @@ from pyretic.lib.corelib import *
 from pyretic.lib.std import *
 
 # import 'csv' module to handle reading of firewall-policies.csv file
+import os
 import csv
 
 # insert the name of the module and policy you want to import
-from pyretic.examples.<....> import <....>
+from pyretic.examples.pyretic_firewall import * 
+
 policy_file = "%s/pyretic/pyretic/examples/firewall-policies.csv" % os.environ[ 'HOME' ]
 
 def main():
@@ -60,11 +62,11 @@ def main():
             # msg.actions.append(of.ofp_action_output(port = of.OFPP_NONE))
 
     # start with a policy that doesn't match any packets
-    not_allowed = none
+    	not_allowed = none
     # and add traffic that isn't allowed
     # for <each pair of MAC address in firewall-policies.csv>:
-    for row in macFilter:
-        not_allowed = not_allowed + ( match(srcmac=EthAddr(row['mac_0']) | match(srcmac+EthAddr(row['mac_1']))) ) + ( match(dstmac=EthAddr(row['mac_0']) | match(dstmac+EthAddr(row['mac_1']))) )
+    	for row in macFilter:
+        	not_allowed = not_allowed + ( match(srcmac=row['mac_0']) | match(srcmac=row['mac_1']))  + ( match(dstmac=row['mac_0']) | match(dstmac=row['mac_1']) )
 
     # express allowed traffic in terms of not_allowed - hint use '~'
     allowed = fwd(~not_allowed)
