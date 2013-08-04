@@ -39,11 +39,13 @@ from pyretic.lib.corelib import *
 from pyretic.lib.std import *
 
 # import 'csv' module to handle reading of firewall-policies.csv file
+from pyretic.examples.pyretic_switch import act_like_switch
+
 import os
 import csv
 
 # insert the name of the module and policy you want to import
-from pyretic.examples.pyretic_firewall import * 
+# from pyretic.examples.pyretic_firewall import * 
 
 policy_file = "%s/pyretic/pyretic/examples/firewall-policies.csv" % os.environ[ 'HOME' ]
 
@@ -54,22 +56,20 @@ def main():
     with open(policy_file) as csvfile:
         macFilter = csv.DictReader(csvfile)
 
-        # For each row create <-- from assignment 4
-        # for row in macFilter:
-            # msg.match.dl_src = EthAddr(row['mac_0'])
-            # msg.match.dl_dst = EthAddr(row['mac_1'])
-            # log.debug('installing filter for %s -> %s', (row['mac_0'], row['mac_1']))
-            # msg.actions.append(of.ofp_action_output(port = of.OFPP_NONE))
 
     # start with a policy that doesn't match any packets
     	not_allowed = none
+
     # and add traffic that isn't allowed
     # for <each pair of MAC address in firewall-policies.csv>:
     	for row in macFilter:
-        	not_allowed = not_allowed + ( match(srcmac=row['mac_0']) | match(srcmac=row['mac_1']))  + ( match(dstmac=row['mac_0']) | match(dstmac=row['mac_1']) )
+		print row['mac_0']
+        	not_allowed = not_allowed + ( match(srcmac=MAC(row['mac_0'])) & match(dstmac=MAC(row['mac_1'])))  + ( match(srcmac=MAC(row['mac_1'])) & match(dstmac=MAC(row['mac_0'])) )
+		# not_allowed = not_allowed + match(srcmac=MAC(row['mac_0']))
 
     # express allowed traffic in terms of not_allowed - hint use '~'
-    allowed = fwd(~not_allowed)
+    allowed = ~not_allowed
+    print allowed
 
     # and only send allowed traffic to the mac learning (act_like_switch) logic
     return allowed >> act_like_switch()
