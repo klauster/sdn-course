@@ -109,10 +109,22 @@ class LBStateMachine(ResonanceStateMachine):
         # Add the state transition logic
         # hint: use the state_transition function   
         
-        
+        if DEBUG == True:
+            print "Load Balance", host, next_state
+
+        # in the subclass, we type check the message type
+        if msgtype == EVENT_TYPE_LB:
+            self.state_transition(next_state, host, queue)
+        else:
+            print "LB: ignoring message type."
+
 
     def get_portA_hosts(self):
-        return <list of host in portA state> # hint: use the get_hosts_in_state function
+        return self.get_hosts_in_state('portA')
+
+#        <list of host in portA state> # hint: use the get_hosts_in_state function
 
     def get_portB_hosts(self):
-        return <list of host in portB state> # hint: use the get_hosts_in_state function
+        return self.get_hosts_in_state('portB')
+
+#        <list of host in portB state> # hint: use the get_hosts_in_state function

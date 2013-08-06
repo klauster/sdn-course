@@ -66,4 +66,7 @@ class LBPolicy(ResonancePolicy):
     # 2. match the incoming packet's source and destination ip against that list of hosts (using pyretic predicates i.e., "match", "modify", and "if_" etc)
     # 3. if there is a match apply portA policy else apply portB policy 
     
-    
+
+    Ports = self.get_portA_hosts('portA'):
+    print "Port A Hosts: " + str(Ports)
+
